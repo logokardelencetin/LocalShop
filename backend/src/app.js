@@ -3,6 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 
+import authRoutes from "./routes/auth.routes.js";
+
 const app = express();
 
 app.use(helmet());
@@ -10,7 +12,7 @@ app.use(helmet());
 app.use(
     cors({
         origin: "http://localhost:5173",
-    }),
+    })
 );
 
 app.use(express.json());
@@ -28,5 +30,7 @@ app.get("/api/health", (req, res) => {
         message: "LocalShop API is running",
     });
 });
+
+app.use("/api/auth", authRoutes);
 
 export default app;
