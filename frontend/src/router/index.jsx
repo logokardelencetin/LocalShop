@@ -24,6 +24,7 @@ import SellerDashboardPage from "../pages/seller/SellerDashboardPage";
 import AddProductPage from "../pages/seller/AddProductPage";
 
 import NotFoundPage from "../pages/NotFoundPage";
+import EditProductPage from "../pages/seller/EditProductPage";
 
 export const router =
     createBrowserRouter([
@@ -128,6 +129,12 @@ export const router =
                                         "seller/products/add",
                                     element: (
                                         <AddProductPage />
+                                    ),
+                                },
+                                {
+                                    path: "seller/products/:id/edit",
+                                    element: (
+                                        <EditProductPage />
                                     ),
                                 },
                             ],

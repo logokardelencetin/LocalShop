@@ -5,10 +5,12 @@ import {
 
 import {
     Link,
+    useNavigate,
     useParams,
 } from "react-router-dom";
 
 import { api } from "../../api/client";
+import { useAuth } from "../../context/AuthContext";
 
 const formatPrice = (price) => {
     return new Intl.NumberFormat("tr-TR", {
@@ -20,13 +22,26 @@ const formatPrice = (price) => {
 const ProductDetailPage = () => {
     const { id } = useParams();
 
+    const navigate = useNavigate();
+
+    const { user } = useAuth();
+
     const [product, setProduct] =
         useState(null);
+
+    const [quantity, setQuantity] =
+        useState(1);
 
     const [loading, setLoading] =
         useState(true);
 
+    const [adding, setAdding] =
+        useState(false);
+
     const [error, setError] =
+        useState("");
+
+    const [success, setSuccess] =
         useState("");
 
     useEffect(() => {
@@ -36,9 +51,7 @@ const ProductDetailPage = () => {
                 setError("");
 
                 const response =
-                    await api.get(
-                        `/products/${id}`
-                    );
+                    await api.get(`/products/${id}`);
 
                 setProduct(
                     response.data.product
@@ -56,6 +69,42 @@ const ProductDetailPage = () => {
         fetchProduct();
     }, [id]);
 
+    const handleAddToCart = async () => {
+        if (!user) {
+            navigate("/login");
+            return;
+        }
+
+        if (user.role !== "customer") {
+            return;
+        }
+
+        try {
+            setAdding(true);
+            setError("");
+            setSuccess("");
+
+            await api.post(
+                "/cart/items",
+                {
+                    productId: product._id,
+                    quantity,
+                }
+            );
+
+            setSuccess(
+                "Ürün sepete eklendi."
+            );
+        } catch (error) {
+            setError(
+                error.message ||
+                "Ürün sepete eklenemedi."
+            );
+        } finally {
+            setAdding(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="page-message">
@@ -64,7 +113,7 @@ const ProductDetailPage = () => {
         );
     }
 
-    if (error) {
+    if (error && !product) {
         return (
             <section>
                 <div className="alert error-alert">
@@ -118,10 +167,7 @@ const ProductDetailPage = () => {
 
                             {product.sellerId.email && (
                                 <span className="muted">
-                                    {
-                                        product.sellerId
-                                            .email
-                                    }
+                                    {product.sellerId.email}
                                 </span>
                             )}
                         </div>
@@ -156,6 +202,91 @@ const ProductDetailPage = () => {
                             </span>
                         )}
                     </div>
+
+                    {error && (
+                        <div className="alert error-alert">
+                            {error}
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="alert success-alert">
+                            {success}
+                        </div>
+                    )}
+
+                    {!user && (
+                        <div className="product-login-box">
+                            <p>
+                                Sepete eklemek için giriş
+                                yapmanız gerekiyor.
+                            </p>
+
+                            <Link
+                                to="/login"
+                                className="button full"
+                            >
+                                Giriş Yap
+                            </Link>
+                        </div>
+                    )}
+
+                    {user?.role === "customer" &&
+                        product.stock > 0 && (
+                            <div className="add-cart-box">
+                                <label htmlFor="quantity">
+                                    Adet
+                                </label>
+
+                                <input
+                                    id="quantity"
+                                    type="number"
+                                    min="1"
+                                    max={product.stock}
+                                    value={quantity}
+                                    onChange={(event) => {
+                                        const value =
+                                            Number(
+                                                event.target.value
+                                            );
+
+                                        setQuantity(value);
+                                    }}
+                                />
+
+                                <button
+                                    type="button"
+                                    className="button full"
+                                    onClick={
+                                        handleAddToCart
+                                    }
+                                    disabled={
+                                        adding ||
+                                        quantity < 1 ||
+                                        quantity >
+                                        product.stock
+                                    }
+                                >
+                                    {adding
+                                        ? "Ekleniyor..."
+                                        : "Sepete Ekle"}
+                                </button>
+
+                                <Link
+                                    to="/cart"
+                                    className="button secondary full"
+                                >
+                                    Sepete Git
+                                </Link>
+                            </div>
+                        )}
+
+                    {user?.role === "seller" && (
+                        <p className="muted">
+                            Satıcı hesapları alışveriş
+                            sepetini kullanamaz.
+                        </p>
+                    )}
                 </aside>
             </div>
         </section>
