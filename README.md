@@ -276,6 +276,12 @@ The backend also uses:
 - Rate limiting
 - Environment variables
 
+## API Documentation
+
+Postman Collection dosyasına buradan ulaşabilirsiniz:
+
+[LocalShop Postman Collection](./docs/LocalShop.postman_collection.json)
+
 ## Demo
 
 A demo video demonstrates:
@@ -289,3 +295,4 @@ A demo video demonstrates:
 - FakePay payment
 - Seller order management
 - Order delivery flow
+
