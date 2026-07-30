@@ -227,6 +227,8 @@ MongoDB Compass can be used to inspect the database.
 
 A Postman Collection is available under:
 
+[LocalShop Postman Collection](./docs/LocalShop.postman_collection.json)
+
 ```text
 docs/LocalShop.postman_collection.json
 ```
@@ -275,12 +277,6 @@ The backend also uses:
 - CORS
 - Rate limiting
 - Environment variables
-
-## API Documentation
-
-Postman Collection dosyasına buradan ulaşabilirsiniz:
-
-[LocalShop Postman Collection](./docs/LocalShop.postman_collection.json)
 
 ## Demo
 
