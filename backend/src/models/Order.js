@@ -36,6 +36,16 @@ const orderItemSchema = new mongoose.Schema(
             required: true,
             min: 0,
         },
+
+        fulfillmentStatus: {
+            type: String,
+            enum: [
+                "PROCESSING",
+                "SHIPPED",
+                "DELIVERED",
+            ],
+            default: "PROCESSING",
+        },
     },
     {
         _id: false,
