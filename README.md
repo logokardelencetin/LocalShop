@@ -292,5 +292,5 @@ A demo video demonstrates:
 - Seller order management
 - Order delivery flow
 
-[▶️ LocalShop Demo](./docs/LocalShop-demo.mp4)
+[▶️ LocalShop Demo](./docs/demo/localshop-demo.mp4)
 
